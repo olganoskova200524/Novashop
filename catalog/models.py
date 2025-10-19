@@ -2,16 +2,15 @@ from django.db import models
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=255, verbose_name="Наименование")
-    description = models.TextField(blank=True, verbose_name="Описание")
+    name = models.CharField(max_length=150, verbose_name='Наименование')
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name = "Категория"
-        verbose_name_plural = "Категории"
-        ordering = ["name"]
+        verbose_name = 'категория'
+        verbose_name_plural = 'категории'
+        ordering = ['id']
 
 
 class Product(models.Model):
