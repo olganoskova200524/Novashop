@@ -1,0 +1,22 @@
+{% extends 'catalog/base.html' %}
+{% block title %}{{ product.name }} — Novashop{% endblock %}
+{% block content %}
+<a class="d-inline-block mb-3" href="{% url 'catalog:index' %}">← Назад к каталогу</a>
+
+<div class="row g-4">
+    <div class="col-md-5">
+        {% if product.image %}<img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}">{%
+        endif %}
+    </div>
+    <div class="col-md-7">
+        <h2 class="h4">{{ product.name }}</h2>
+        <p><strong>Цена:</strong> {{ product.price }} ₽</p>
+        <p><strong>Категория:</strong> {{ product.category.name }}</p>
+        {% if product.description %}
+        <p class="mt-3">{{ product.description }}</p>
+        {% else %}
+        <p class="text-muted">Описание не указано.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
