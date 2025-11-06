@@ -1,0 +1,21 @@
+{% extends 'catalog/base.html' %}
+{% block title %}Блог — Novashop{% endblock %}
+{% block content %}
+<h2 class="h5 mb-3">Статьи</h2>
+<p><a class="btn btn-sm btn-primary" href="{% url 'blog:create' %}">Новая статья</a></p>
+<div class="row g-3">
+    {% for p in posts %}
+    <div class="col-12 col-md-6">
+        <div class="card h-100">
+            {% if p.preview %}<img src="{{ p.preview.url }}" class="card-img-top" alt="{{ p.title }}">{% endif %}
+            <div class="card-body">
+                <h3 class="h6"><a href="{% url 'blog:detail' p.pk %}">{{ p.title }}</a></h3>
+                <div class="text-muted small">{{ p.created_at|date:"d.m.Y H:i" }} • просмотров: {{ p.views }}</div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>Пока нет опубликованных статей.</p>
+    {% endfor %}
+</div>
+{% endblock %}
