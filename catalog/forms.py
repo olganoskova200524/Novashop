@@ -33,3 +33,9 @@ class ProductForm(forms.ModelForm):
         value = self.cleaned_data.get('description')
         _validate_forbidden(value, 'Описание')
         return value
+
+    def clean_price(self):
+        value = self.cleaned_data.get('price')
+        if value is not None and value < 0:
+            raise ValidationError("Цена не может быть отрицательной.")
+        return value
