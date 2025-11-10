@@ -1,0 +1,16 @@
+{% extends 'catalog/base.html' %}
+{% block title %}{% if object %}Редактирование{% else %}Новый товар{% endif %} — Novashop{% endblock %}
+{% block content %}
+<h2 class="h5 mb-3">{% if object %}Редактировать товар{% else %}Создать товар{% endif %}</h2>
+<form method="post" enctype="multipart/form-data" class="vstack gap-3">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    {% if object %}
+    <a class="btn btn-outline-danger" href="{% url 'catalog:delete' object.pk %}">Удалить</a>
+    <a class="btn btn-link" href="{% url 'catalog:detail' object.pk %}">Отмена</a>
+    {% else %}
+    <a class="btn btn-link" href="{% url 'catalog:index' %}">Отмена</a>
+    {% endif %}
+</form>
+{% endblock %}
