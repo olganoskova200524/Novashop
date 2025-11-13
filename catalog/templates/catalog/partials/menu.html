@@ -1,4 +1,22 @@
-<nav class="mt-2">
-  <a class="me-3" href="{% url 'catalog:index' %}">Главная</a>
-  <a href="{% url 'catalog:contacts' %}">Контакты</a>
+<nav class="mt-2 d-flex gap-3 align-items-center">
+
+    <a class="me-3" href="{% url 'catalog:index' %}">Главная</a>
+    <a href="{% url 'catalog:contacts' %}">Контакты</a>
+
+    <span class="ms-auto"></span>
+
+    {% if request.user.is_authenticated %}
+
+    <form action="{% url 'users:logout' %}" method="post" class="d-inline">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-link p-0">Выйти</button>
+    </form>
+
+    {% else %}
+
+    <a href="{% url 'users:login' %}">Войти</a>
+    <a href="{% url 'users:register' %}">Регистрация</a>
+
+    {% endif %}
+
 </nav>
