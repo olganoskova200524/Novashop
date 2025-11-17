@@ -23,27 +23,23 @@
         <p class="text-muted">Описание не указано.</p>
         {% endif %}
 
-        <!-- Блок действий с товаром -->
         <div class="mt-4 d-flex gap-2">
 
-            {% if perms.catalog.change_product %}
-            <a href="{% url 'catalog:edit' product.pk %}" class="btn btn-secondary">
-                Редактировать
-            </a>
+            {% if request.user.is_authenticated and request.user == product.owner %}
+            <a href="{% url 'catalog:edit' product.pk %}" class="btn btn-secondary">Редактировать</a>
             {% endif %}
 
-            {% if perms.catalog.delete_product %}
-            <a href="{% url 'catalog:delete' product.pk %}" class="btn btn-danger">
-                Удалить
-            </a>
+            {% if request.user.is_authenticated %}
+            {% if request.user == product.owner or perms.catalog.delete_product %}
+
+            <a href="{% url 'catalog:delete' product.pk %}" class="btn btn-danger">Удалить</a>
+            {% endif %}
             {% endif %}
 
-            {% if perms.catalog.can_unpublish_product %}
+            {% if request.user.is_authenticated and perms.catalog.can_unpublish_product %}
             <form method="post" action="{% url 'catalog:unpublish' product.pk %}">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-warning">
-                    Снять с публикации
-                </button>
+                <button type="submit" class="btn btn-warning">Снять с публикации</button>
             </form>
             {% endif %}
         </div>

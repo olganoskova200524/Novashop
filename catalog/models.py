@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class Category(models.Model):
@@ -26,6 +27,14 @@ class Product(models.Model):
         default=False,
         verbose_name="Опубликован",
         help_text="Отображать товар в каталоге"
+    )
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name='Владелец',
+        related_name='products',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
 
     def __str__(self):
