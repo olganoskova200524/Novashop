@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.core.cache import cache
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views import View
@@ -64,7 +66,18 @@ class ProductListView(ListView):
     context_object_name = 'products'
 
     def get_queryset(self):
-        return Product.objects.select_related('category').all()
+        qs = Product.objects.select_related('category')
+
+        if not getattr(settings, 'CACHE_ENABLED', False):
+            return qs.all()
+
+        cache_key = 'product_list'
+        products = cache.get(cache_key)
+
+        if products is None:
+            products = list(qs.all())
+            cache.set(cache_key, products, 60 * 5)  # 5 минут
+        return products
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
