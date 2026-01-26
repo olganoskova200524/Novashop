@@ -5,7 +5,7 @@ from .models import User
 class UserRegisterForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ("email","first_name", "last_name", "password1", "password2")
+        fields = ("email", "first_name", "last_name", "password1", "password2")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -30,7 +30,6 @@ class UserRegisterForm(UserCreationForm):
         self.fields["password2"].widget.attrs.update({
             "placeholder": "Повторите пароль"
         })
-
 
         for field in self.fields.values():
             existing = field.widget.attrs.get("class", "")
