@@ -1,10 +1,13 @@
+from django.conf import settings
+from django.core.cache import cache
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from .forms import ProductForm
-from .models import Product
+from .models import Product, Category
+from .services import get_products_by_category
 
 
 class ProductUnpublishView(PermissionRequiredMixin, View):
@@ -63,7 +66,18 @@ class ProductListView(ListView):
     context_object_name = 'products'
 
     def get_queryset(self):
-        return Product.objects.select_related('category').all()
+        qs = Product.objects.select_related('category')
+
+        if not getattr(settings, 'CACHE_ENABLED', False):
+            return qs.all()
+
+        cache_key = 'product_list'
+        products = cache.get(cache_key)
+
+        if products is None:
+            products = list(qs.all())
+            cache.set(cache_key, products, 60 * 5)  # 5 минут
+        return products
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
@@ -74,3 +88,19 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
 
 class ContactsView(TemplateView):
     template_name = 'catalog/contacts.html'
+
+
+class CategoryProductsView(ListView):
+    model = Product
+    template_name = 'catalog/category_products.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        category_id = self.kwargs['category_id']
+        return get_products_by_category(category_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category_id = self.kwargs['category_id']
+        context['category'] = Category.objects.get(pk=category_id)
+        return context

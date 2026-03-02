@@ -1,0 +1,32 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}{{ category.name }} — Novashop{% endblock %}
+
+{% block content %}
+<a class="d-inline-block mb-3" href="{% url 'catalog:index' %}">← Назад к каталогу</a>
+
+<h2 class="h5 mb-3">Товары категории «{{ category.name }}»</h2>
+
+<div class="row g-3">
+    {% for p in products %}
+    <div class="col-12 col-sm-6 col-md-4">
+        <div class="card h-100">
+            {% if p.image %}
+            <img src="{{ p.image.url }}" class="card-img-top" alt="{{ p.name }}">
+            {% endif %}
+            <div class="card-body">
+                <h3 class="h6 card-title">
+                    <a href="{% url 'catalog:detail' p.pk %}">{{ p.name }}</a>
+                </h3>
+                <p class="card-text text-muted">
+                    {{ p.description|slice:":100" }}{% if p.description|length > 100 %}…{% endif %}
+                </p>
+                <div><strong>{{ p.price }} ₽</strong></div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>В этой категории пока нет товаров.</p>
+    {% endfor %}
+</div>
+{% endblock %}
